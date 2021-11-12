@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User ID</th>
+            <th>Username</th>
+            <th>Registration date</th>
+            <th>Number of asked questions</th>
+            <th>Number of answers</th>
+            <th>Number of comments</th>
+            <th>Reputation</th>
+
+            
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in user_data %}
+        <tr>
+            <td>{{ data["id"] }}</td>
+            <td>{{ data["username"] }}</td>
+            <td>{{ data["registered"] }}</td>
+            <td>{{ data["question_count"] }}</td>
+            <td>{{ data["answer_count"] }}</td>
+            <td>{{ data["comment_count"] }}</td>
+            <td>{{ data["reputation"] }} </td>
+            <td><a href="{{ url_for('user', user_id=data["id"]) }}" class="btn btn-primary">User Page</a></td>
+            {% if data["administrator"] == True %}
+            <td><a href="{{ url_for('delete_user', user_id=data["id"]) }}" class="btn btn-danger">Delete user</a></td>
+            {% endif %}
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

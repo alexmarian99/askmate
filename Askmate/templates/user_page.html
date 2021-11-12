@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<ul>
+    <li>User ID: {{ user["id"] }}</li>
+    <li>Username: {{ user["username"] }}</li>
+    {% if user["administrator"] == True %}
+    <li>Administrator</li>
+    {% endif %}
+    <li>Registration date: {{ user["registered"] }}</li>
+    <li>Number of asked questions: {{ user["question_count"] }}</li>
+    <li>Number of answers: {{ user["answer_count"] }}</li>
+    <li>Number of comments: {{ user["comment_count"] }}</li>
+    <li>Reputation: {{ user["reputation"] }}</li>
+</ul>
+<h2>Questions:</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Question ID</th>
+            <th>Submission Time</th>
+            <th>View number</th>
+            <th>Vote number</th>
+            <th>Title</th>
+            <th>Message</th>
+            <th>Image</th>
+
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for question in questions %}
+        <tr>
+            <td>{{ question["id"] }}</td>
+            <td>{{ question["submission_time"] }}</td>
+            <td>{{ question["view_number"] }}</td>
+            <td>{{ question["vote_number"] }}</td>
+            <td>{{ question["title"] }}</td>
+            <td>{{ question["message"] }}</td>
+            {% if question.image %}
+            <td>
+                <img src="{{ url_for('image_question', question_id=question.id) }}" width="50" />
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Answers:</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Answer ID</th>
+            <th>Submission time</th>
+            <th>Vote number</th>
+            <th>Question ID</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for answer in answers %}
+        <tr>
+            <td>{{ answer["id"] }}</td>
+            <td>{{ answer["submission_time"] }}</td>
+            <td>{{ answer["vote_number"] }}</td>
+            <td>{{ answer["question_id"] }}</td>
+            <td>{{ answer["message"] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Comments:</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Comment ID</th>
+            <th>Question ID</th>
+            <th>Answer ID</th>
+            <th>Message</th>
+            <th>Submission time</th>
+            <th>Edited count</th>
+
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for comment in comments %}
+        <tr>
+            <td>{{ comment["id"] }}</td>
+            <td>{{ comment["question_id"] }}</td>
+            <td>{{ comment["answer_id"] }}</td>
+            <td>{{ comment["message"] }}</td>
+            <td>{{ comment["submission_time"] }}</td>
+            <td>{{ comment["edited_count"] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

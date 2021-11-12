@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Askmate</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='content/bootstrap.min.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='content/site.css') }}" />
+    <script src="{{ url_for('static', filename='scripts/modernizr-2.6.2.js') }}"></script>
+</head>
+
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="{{ url_for('home') }}" class="navbar-brand">Askmate</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('list') }}">Questions</a></li>
+                    <li><a href="{{ url_for('list_bonus_questions') }}">Bonus Questions</a></li>
+                    <li><a href="{{ url_for('list_tags') }}">Tags</a></li>
+                    {% if session['username']|length %}
+                    <li><a href="{{ url_for('add_question') }}">Ask a question</a></li>
+                    <li><a href="{{ url_for('list_users') }}">List users</a></li>
+                    <li><a href="{{ url_for('user', user_id=session["username"][0]) }}">Hello, {{ session["username"][1] }}</a></li>
+                    <li><a href="{{ url_for('logout') }}">Log out</a></li>
+                    {% else %}
+                    <li><a href="{{ url_for('login') }}">Log in</a></li>
+                    <li><a href="{{ url_for('register_user') }}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container body-content">
+        {% block content %}{% endblock %}
+        <hr />
+        <footer>
+            <p>&copy; {{ year }} - Codecool</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='scripts/jquery-1.10.2.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/respond.js') }}"></script>
+    {% block scripts %}{% endblock %}
+
+</body>
+</html>

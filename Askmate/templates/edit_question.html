@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row">
+    <form action="{{ url_for('edit_question', question_id=question_id) }}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="exampleInputEmail1">Title</label>
+            <input type="text" class="form-control" id="exampleInputEmail1" name="title" value="{{ question.title }}">
+        </div>
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1">Message</label>
+            <textarea class="form-control" style="width:100%" id="exampleFormControlTextarea1" name="message" rows="3">{{ question.message }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<form action="{{ url_for('list') }}" method="get">
+    <div class="form-group">
+        <label for="exampleInputEmail1">Search</label>
+        <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="keywords" placeholder="keywords" value="{{ request.args.get("keywords", "") }}">
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th><a href="{{ url_for('list', order='id', direction='ASC' if direction == 'DESC' else 'DESC') }}"># {{ ordering.id }}</a></th>
+            <th>Image</th>
+            <th>Tags</th>
+            <th><a href="{{ url_for('list', order='title', direction='ASC' if direction == 'DESC' else 'DESC') }}">Title {{ ordering.title }}</a></th>
+            <th><a href="{{ url_for('list', order='vote_number', direction='ASC' if direction == 'DESC' else 'DESC') }}">Votes {{ ordering.vote_number }}</a></th>
+            <th><a href="{{ url_for('list', order='view_number', direction='ASC' if direction == 'DESC' else 'DESC') }}">Views {{ ordering.view_number }}</a></th>
+            <th />
+        </tr>
+    </thead>
+    <tbody>
+        {% for question in questions %}
+        <tr>
+            <td>{{ question.id }}</td>
+            <td>
+                {% if question.image %}
+                <img src="{{ url_for('image_question', question_id=question.id) }}" width="50" />
+                {% endif %}
+            </td>
+            <td>{{ question.tags|safe }}</td>
+            <td>{{ question.title|safe }}</td>
+            <td>{{ question.vote_number }}</td>
+            <td>{{ question.view_number }}</td>
+            <th>
+                <a href="{{ url_for('view_question', question_id=question.id) }}" class="btn btn-primary">View question</a>
+                {% if session['username']|length %}
+                {% if session["username"][2] == True %}
+                <a href="{{ url_for('delete_question', question_id=question.id) }}" class="btn btn-danger">Delete question</a>
+                {% endif %}
+                {% endif %}
+            </th>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

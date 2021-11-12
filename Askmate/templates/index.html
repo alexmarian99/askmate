@@ -1,0 +1,76 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="jumbotron">
+    <h1>Introduction</h1>
+    <p class="lead">
+        Welcome to the Codecool application. The purpose of this application is to easily ask almost anything, and other users will help you with an answer.
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Getting started</h2>
+        <p>
+            The first thing you can do is ask a question or answer one to help someone.
+        </p>
+
+        <p><a class="btn btn-default" href="{{ url_for('list') }}">Show questions &raquo;</a></p>
+        {% if session['username']|length %}
+        <p><a class="btn btn-default" href="{{ url_for('add_question') }}">Ask a question &raquo;</a></p>
+        {% endif %}
+    </div>
+    <div class="col-md-4">
+        <h2>Tips for asking questions</h2>
+        <p>
+            We have prepared an article with ten tips on how to ask good questions. It may help you get a faster response from other users.
+        </p>
+        <p><a class="btn btn-default" href="https://www.dummies.com/careers/find-a-job/interviews/ten-tips-for-asking-good-questions/">Go to article &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Tips for answers</h2>
+        <p>We have prepared an article about answering questions efectively. It may help you compose an answer in less time.</p>
+        <p><a class="btn btn-default" href="http://www.strathman.com/pdf/answering.pdf">Go to article &raquo;</a></p>
+    </div>
+</div>
+<div class="row">
+    <h2>Latest five questions</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Image</th>
+                <th>Title</th>
+                <th>Votes</th>
+                <th>Views</th>
+                <th />
+            </tr>
+        </thead>
+        <tbody>
+            {% for question in questions %}
+            <tr>
+                <td>{{ question.id }}</td>
+                <td>
+                    {% if question.image %}
+                    <img src="{{ url_for('image_question', question_id=question.id) }}" width="50" />
+                    {% endif %}
+                </td>
+                <td>{{ question.title }}</td>
+                <td>{{ question.vote_number }}</td>
+                <td>{{ question.view_number }}</td>
+                <th>
+                    <a href="{{ url_for('view_question', question_id=question.id) }}" class="btn btn-primary">View question</a>
+                    {% if session['username']|length %}
+                    {% if session["username"][2] == True %}
+                    <a href="{{ url_for('delete_question', question_id=question.id) }}" class="btn btn-danger">Delete question</a>
+                    {% endif %}
+                    {% endif %}
+                </th>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

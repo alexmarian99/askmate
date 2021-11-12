@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+
+{% block content %}
+{% if session['username']|length %}
+{% if session["username"][2] == True %}
+<h2>{{ question_data.title }} <a href="{{ url_for('edit_question', question_id=question_data.id) }}" class="btn btn-warning">Edit question</a></h2>
+<h2>
+    Tags:
+    {% if question_data.tags != None %}
+    {% for tag in question_data.tags.split(",") %}
+    <a href="{{ url_for("delete_question_tag", question_id=question_data.id, tag_name=tag) }}">{{ tag }}</a>
+    {% endfor %}
+    {% endif %}
+</h2>
+<form action="{{ url_for('add_question_tag', question_id=question_data.id) }}" method="post">
+    <div class="form-group" style="width:35%">
+        <label for="exampleFormControlSelect1">Tag</label>
+        <select class="form-control" id="exampleFormControlSelect1" name="tag">
+            {% for tag in tags %}
+	    {% if question_data.tags != None %}
+            {% if tag.name not in question_data.tags.split(",") %}
+            <option value="{{ tag.id }}">{{ tag.name }}</option>
+            {% endif %}
+	    {% else %}
+	    <option value="{{ tag.id }}">{{ tag.name }}</option>
+	    {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Add tag</button>
+</form>
+{% endif %}
+{% endif %}
+{% if session['username']|length %}
+{% if session["username"][2] == False %}
+<h2>Tags: {{ question_data.tags }}</h2>
+{% endif %}
+{% endif %}
+<h2>by {{ question_data.username }}</h2>
+{{ question_data.view_number }} views | {{ question_data.vote_number }} votes | <a href="{{ url_for('vote_question', question_id=question_data.id, up=1) }}" class="btn btn-success">Vote up</a> | <a href="{{ url_for('vote_question', question_id=question_data.id, up=0) }}" class="btn btn-danger">Vote down</a>
+<h4>{{ question_data.message }}</h4>
+{% if question_data.image %}
+<img src="{{ url_for('image_question', question_id=question_data.id) }}" style="width:100%" />
+{% endif %}
+<hr />
+<div class="container bootstrap snippets bootdey">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="blog-comment">
+                <h3 class="text-success">Comments</h3>
+                <hr />
+                <ul class="comments">
+                    {% for comment in comments_data[0] %}
+                    <li class="clearfix">
+                        <div class="post-comments">
+                            <p class="meta">{{ comment["submission_time"] }} <a>{{ comment["username"] }}</a> says : <i class="pull-right"></i></p>
+                            <p>
+                                {{ comment["message"] }}
+                            </p>
+                        </div>
+                    </li>
+                    {% endfor %}
+                    {% if session['username']|length %}
+                    <li class="clearfix">
+                        <div class="post-comments">
+                            <form action="{{ url_for('add_question_comment', question_id=question_data.id) }}" method="post">
+                                <div class="form-group">
+                                    <label for="exampleFormControlTextarea1">New comment</label>
+                                    <textarea class="form-control" style="width:100%" id="exampleFormControlTextarea1" name="message" rows="3"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Post</button>
+                            </form>
+                        </div>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container bootstrap snippets bootdey">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="blog-comment">
+                <h3 class="text-success">Answers</h3>
+                <hr />
+                <ul class="comments">
+                    {% for answer in answers_data %}
+                    <li class="clearfix">
+                        <div class="post-comments">
+                            {% if answer["bow"] == True %}
+                            <img src="{{ url_for("static", filename="bow.png") }}" height="30" />
+                            {% endif %}
+                            {{ answer["vote_number"] }} votes | <a href="{{ url_for('vote_answer', answer_id=answer["id"], up=1) }}" class="btn btn-success">Vote up</a> | <a href="{{ url_for('vote_answer', answer_id=answer.id, up=0) }}" class="btn btn-danger">Vote down</a> |
+                            {% if answer["bow"] == False %}
+                            <a href="{{ url_for('add_bow_to_answer',question_id=question_data.id,answer_id=answer["id"],bow_value=True) }}" class="btn btn-success">Give Bow</a>
+                            {% else %}
+                            <a href="{{ url_for('add_bow_to_answer',question_id=question_data.id,answer_id=answer["id"],bow_value=False) }}" class="btn btn-danger">Take Bow</a>
+                            {% endif %}
+                            <br /><br />
+                            <p class="meta">{{ answer["submission_time"] }} <a>{{ answer["username"] }}</a> says : <i class="pull-right"></i></p>
+                            <p>
+                                {{ answer["message"] }}
+                            </p>
+                        </div>
+                        <ul class="comments">
+                            {% for comment in comments_data[answers_data.index(answer) + 1] %}
+                            <li class="clearfix">
+                                <div class="post-comments">
+                                    <p class="meta">{{ comment["submission_time"] }} <a>{{ comment["username"] }}</a> says : <i class="pull-right"></i></p>
+                                    <p>
+                                        {{ comment["message"] }}
+                                    </p>
+                                </div>
+                            </li>
+                            {% endfor %}
+                            <li class="clearfix">
+                                {% if session['username']|length %}
+                                <div class="post-comments">
+                                    <form action="{{ url_for('add_answer_comment', question_id=question_data.id, answer_id=answer["id"]) }}" method="post">
+                                        <div class="form-group">
+                                            <label for="exampleFormControlTextarea1">New comment</label>
+                                            <textarea class="form-control" style="width:100%" id="exampleFormControlTextarea1" name="message" rows="3"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Post</button>
+                                    </form>
+                                </div>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </li>
+                    {% endfor %}
+                    {% if session['username']|length %}
+                    <li class="clearfix">
+                        <div class="post-comments">
+                            <form action="{{ url_for('add_answer', question_id=question_data.id) }}" method="post">
+                                <div class="form-group">
+                                    <label for="exampleFormControlTextarea1">New answer</label>
+                                    <textarea class="form-control" style="width:100%" id="exampleFormControlTextarea1" name="message" rows="3"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Post</button>
+                            </form>
+                        </div>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
